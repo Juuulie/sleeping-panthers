@@ -23,8 +23,8 @@ require(['game', 'IM', 'config', 'input'], function(game, ImagesManager, config,
 
 	// ImagesManager.add('assets/images/ship.png');
 	// ImagesManager.add('assets/images/shot.png');
-	// ImagesManager.add('assets/images/enemy.png');
 	// ImagesManager.add('assets/images/explosion.png');
+	ImagesManager.add('assets/images/sprites/sprite_bucky_ballon.png');
 
 	// A mettre dans le ImagesManager, quand des images seront disponibles
 	game.init();
@@ -96,10 +96,10 @@ function randi(min, max) {
 function collide(a, b){
 	//console.log(b.x);
 
-	if (b.x >= a.x + a.width) { console.log('trop a droite'); }
-	if (b.x + b.width <= a.x) { console.log('trop a gauche'); }
-	// if (b.y >= a.y + a.height) { console.log('trop en bas'); }
-	if (b.y + b.height <= a.y ) { console.log('trop en haut'); }
+	// if (b.x >= a.x + a.width) { console.log('trop a droite'); }
+	// if (b.x + b.width <= a.x) { console.log('trop a gauche'); }
+	// // if (b.y >= a.y + a.height) { console.log('trop en bas'); }
+	// if (b.y + b.height <= a.y ) { console.log('trop en haut'); }
 	return !(b.x > a.x + a.width 			// trop à droite
 				|| b.x + b.width < a.x 	// trop à gauche
 				|| b.y > a.y + a.height 	// trop en bas

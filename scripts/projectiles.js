@@ -20,8 +20,9 @@ define(['canvas', 'IM'], function(canvas, IM) {
 		this.projectilesList = [];
 
 		this.add = function(x, y, direction) {
+
 			this.projectilesList.push(new Projectile({
-				x : x,
+				x : x, // enlever moitié width missile
 				y : y,
 				direction : direction
 			}));

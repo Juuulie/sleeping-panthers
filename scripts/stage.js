@@ -12,6 +12,7 @@ define(['canvas', 'water'], function(canvas, water) {
 		};
 
 		this.update = function() {
+			water.update();
 		};
 
 		this.updateBehavior = function() {

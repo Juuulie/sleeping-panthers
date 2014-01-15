@@ -2,7 +2,7 @@
  * player.js
 **/
 
-define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water'], function(canvas, input, IM, projectiles, config, water) {
+define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water', 'extras'], function(canvas, input, IM, projectiles, config, water, extras) {
 	function Player() {
 		this.x =200;
 		this.y =0;
@@ -12,7 +12,7 @@ define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water'], function(can
 		this.speed = 5;
 		this.gravityCount = 30;
 		this.canSpit = true;
-		this.water = 50;
+		this.water = 150;
 		this.lessWater = 5;
 
 		this.init = function() {
@@ -29,7 +29,8 @@ define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water'], function(can
 					if(this.canSpit && this.water > 0){
 						this.canSpit = false;
 						this.shipDirection();
-						projectiles.add(this.x , this.y , this.direction);
+
+						projectiles.add(this.x+this.width*0.5 , this.y , this.direction);
 						this.useWater();
 					}
 				}else{
@@ -41,7 +42,9 @@ define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water'], function(can
 			}
 			this.gravity();
 
-			this.checkCollisionWith(water);
+			// check collision
+			//this.checkCollisionWith(water);
+			//this.checkCollisionWith(extras);
 
 			// Vérification et ajustement des coordonnées si le joueur est sorti de l'écran.
 			if (this.x < 0) 								  	this.x = 0;
@@ -70,6 +73,14 @@ define(['canvas', 'input', 'IM', 'projectiles', 'config', 'water'], function(can
 
 				
 		this.checkCollisionWith = function(obj){
+
+			var p = this;
+				
+			if(collide(obj, p)){
+				return p;
+			}else{
+				return false;
+			}
 		}
 
 
