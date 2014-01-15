@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+	<title>Space shooter</title>
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+	<style type="text/css">
+
+		nav#home, div#pauseMenu{
+			position: absolute;
+			z-index: 1000;
+			top: 35%;
+			left: 40%;
+			width: 400px;
+		}
+
+		nav#home ul, div#pauseMenu ul{
+			width: 400px;
+			list-style-type: none;
+		}
+
+		nav#home ul>li, div#pauseMenu ul>li{
+			width: 300px;
+			font-size: 2em;
+			background-color: rgba(255, 255, 255, 0.9);
+			padding: 10px 20px;
+			margin-bottom: 10px;
+			border: 1px solid lime;
+		}
+
+		nav#home ul>li>span.O, div#pauseMenu ul>li>span.O{
+			color: lime;
+		}
+
+		nav#home ul>li>span.U, div#pauseMenu ul>li>span.U{
+			color: blue;
+		}
+
+		div#regles{
+			position: absolute;
+			z-index: 100;
+			color: white;
+			visibility: hidden;
+		}
+
+		div#pauseMenu{
+			visibility: hidden;
+		}
+
+	</style>
+</head>
+<body role="main">
+
+<nav id="home">
+	<ul>
+		<li id="playHomeButton">Jouons <span class="O">O</span></li>
+		<li id="reglesHomeButton">Règles <span class="U">U</span></li>
+	</ul>
+</nav>
+
+<div id="regles">
+	<p>Ce sont les règles</p>
+</div>
+
+<div id="pauseMenu">
+	<ul>
+		<li id="playHomeButton">Reprendre <span class="O">O</span></li>
+		<li id="reglesHomeButton">Règles <span class="U">U</span></li>
+	</ul>
+</div>
+
+<!-- Inclusion de la librairie REQUIRE.JS 
+		/scripts/main.js sera le point de démarrage de l'appli. -->
+<script src="lib/require.min.js" data-main="scripts/main"></script>
+
+</body>
+</html>
