@@ -18,9 +18,11 @@ define(['canvas'], function(canvas) {
 		this.init = function(){
 
 		};
+
 		this.update = function(){
 
 		};
+		
 		this.render = function(){
 			canvas.ctx.fillStyle = 'blue';
 			

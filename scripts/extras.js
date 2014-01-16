@@ -2,7 +2,7 @@
  * extras.js
 **/
 
-define(['canvas', 'IM'], function(canvas, IM) {
+define(['canvas', 'config', 'IM'], function(canvas, config, IM) {
 
 	function Extra( params ) {
 		this.x = params.x || 0;
@@ -45,10 +45,6 @@ define(['canvas', 'IM'], function(canvas, IM) {
 	function ExtrasManager() {
 		this.extrasList = [];
 
-		this.bonusList = [];
-		this.malusList = [];
-
-
 		this.addBonus = function(x, y){
 			var eType = randi(1,2);
 
@@ -59,7 +55,6 @@ define(['canvas', 'IM'], function(canvas, IM) {
 			});
 
 			this.extrasList.push(bonus);
-			this.bonusList.push(bonus);
 		};
 		this.addMalus = function(x, y){
 			var eType = randi(1,5);
@@ -71,8 +66,6 @@ define(['canvas', 'IM'], function(canvas, IM) {
 			});
 
 			this.extrasList.push(malus);
-			this.malusList.push(malus);
-
 
 		};
 
@@ -100,12 +93,76 @@ define(['canvas', 'IM'], function(canvas, IM) {
 
 				// Si on détecte une collision avec un extra, on
 				// renvoie ce extra ...
-				if (collide(obj, p))
-					return p;
+				// if (collidePlatf(obj, p) == 'bottom'){
+				// 	this.playExtras(obj, p.extra, p.eType);
+				// 	this.remove(p);
+				// }
 			}
 			// ... sinon, on renvoie false
 			return false;
 		};
+
+		this.playExtras = function(player, e, t){
+			if(e == "bonus"){
+
+				switch(t){
+					case 1 :
+						this.moreWater(player);
+						break;
+					case 2 :
+						this.moreSpeed(player);
+						break;
+				}
+
+			}else if(e == "malus"){
+
+				switch(t){
+					case 1 :
+						this.moreSquirrel();
+						break;
+					case 2 :
+						this.waterCost(player);
+						break;
+					case 3 :
+						this.twoBalloons();
+						break;
+					case 4 :
+						this.night();
+						break;
+					case 5 :
+						this.lessSpeed(player);
+						break;
+				}
+			}
+		};
+
+		this.moreWater = function(player){
+			player.maxWater = 100;
+		}
+
+		this.moreSpeed = function(player){
+			player.speed = 15;
+		}
+
+		this.lessSpeed = function(){
+			player.speed = 5;
+		}
+
+		this.moreSquirrel = function(){
+			config.squirrels_number += 2;
+		}
+
+		this.waterCost = function(player){
+			player.lessWater = 10;
+		}
+
+		this.twoBalloons = function(){
+			config.squirrel_life = 2;
+		}
+
+		this.night = function(){
+
+		}
 
 		this.render = function() {
 			
@@ -124,8 +181,16 @@ define(['canvas', 'IM'], function(canvas, IM) {
 				canvas.ctx.translate(e.x, e.y);
 				//canvas.ctx.drawImage(p.img.data, 0, 0);
 				canvas.ctx.restore();
+				canvas.ctx.fillStyle = 'none';
 			}
 		};
+
+		this.destroy = function(){
+			for (var i = 0; i < this.extrasList.length; i++) {
+				this.extrasList.splice(i,1);
+				//delete(this.extrasList[i]);
+			};
+		}
 
 		this.remove = function(obj) {
 			var p;

@@ -5,35 +5,47 @@
 require.config({
 	paths : {
 		'IIG' : '../lib/IIG',
-		'buzz' : '../lib/buzz'
+		
 	},
 	shim : {
 		'IIG' : {
 			'exports' : 'IIG',
 			'deps' : []
-		},
-		'buzz' : {
-			'exports' : 'buzz',
-			'deps' : []
 		}
 	}
 });
 
-require(['game', 'IM', 'config', 'input'], function(game, ImagesManager, config, input) {
-
-	// ImagesManager.add('assets/images/ship.png');
-	// ImagesManager.add('assets/images/shot.png');
-	// ImagesManager.add('assets/images/explosion.png');
+require(['game', 'IM', 'config', 'input', 'sound'], function(game, ImagesManager, config, input, sound) {
+	ImagesManager.add('assets/images/sprites/spit.png');
+	ImagesManager.add('assets/images/sprites/sprite_panth_respire.png');
+	ImagesManager.add('assets/images/sprites/sprite_panth_respire_2.png');
+	ImagesManager.add('assets/images/sprites/sprite_panth_awake.png');
 	ImagesManager.add('assets/images/sprites/sprite_bucky_ballon.png');
+	ImagesManager.add('assets/images/sprites/sprite_bucky_explosion.png');
+	ImagesManager.add('assets/images/sprites/sprite_marche.png');
+	ImagesManager.add('assets/images/sprites/sprite_crache_kuzco.png');
+	ImagesManager.add('assets/images/platform/puit.png');
+	ImagesManager.add('assets/images/platform/sol.png');
+	ImagesManager.add('assets/images/platform/plateformeDebut.png');
+	ImagesManager.add('assets/images/platform/plateforme1.png');
+	ImagesManager.add('assets/images/platform/plateforme3.png');
+	ImagesManager.add('assets/images/bg/bg_UI.png');
+	ImagesManager.add('assets/images/sprites/spit.png');
+	ImagesManager.add('assets/images/sidebar/water.png');
+	ImagesManager.add('assets/images/sidebar/water-cadre.png');
+	ImagesManager.add('assets/images/sidebar/count-dead.png');
+	
 
 	// A mettre dans le ImagesManager, quand des images seront disponibles
-	game.init();
-	requestAnimFrame(GameLoop);
+	
 
 	ImagesManager.loadAll(function() {
 
 		// Initialisation du jeu
-			
+		requestAnimFrame(GameLoop);
+		sound.init();
+		var menu = sound.getSound('menu');
+		//menu.sound.play();
 
 		// Premier appel pour entrer dans la boucle de jeu infinie
 		
@@ -42,37 +54,71 @@ require(['game', 'IM', 'config', 'input'], function(game, ImagesManager, config,
 	// Boucle de jeu
 	function GameLoop( t ) {
 		config.TIMING = t;
-		//console.log(t);
 		input.updateGamepadsButtons();
-		// Event lancement jeu
-		if((game.scene == 'menu' || game.scene == 'pause') && input.gamepad.connected && input.gamepad.O){
+
+		if(game.scene == 'menu'){
+			visibilityHidden(document.getElementsByClassName('nav'));
+			document.getElementById('home').style.visibility = 'visible';	
+		}
+		if(game.scene == 'pause'){
+			visibilityHidden(document.getElementsByClassName('nav'));					
+			document.getElementById('pause').style.visibility = 'visible';			
+		}
+		if(game.scene == 'rules-home'){
+			visibilityHidden(document.getElementsByClassName('nav'));	
+			document.getElementById('home').style.visibility = 'visible';			
+			document.getElementById('rules-home').style.visibility = 'visible';			
+		}
+		if(game.scene == 'rules'){
+			visibilityHidden(document.getElementsByClassName('nav'));	
+			document.getElementById('rules').style.visibility = 'visible';			
+		}
+
+
+		// -- Start game
+		if((game.scene == 'menu') && input.gamepad.connected && input.gamepad.O){
 			game.scene = 'game';
-			document.getElementById('home').style.visibility = 'hidden';
-			document.getElementById('regles').style.visibility = "hidden";
-		};
+			game.init();
+		}
+		if((game.scene == 'pause') && input.gamepad.connected && input.gamepad.O){
+			game.scene = 'game';
+		}
 
-		// Event affichage règle
-		if((game.scene == 'menu' || game.scene == 'pause') && input.gamepad.connected && input.gamepad.U){
-			game.scene = 'regles';
-			document.getElementById('home').style.visibility = "hidden";
-			document.getElementById('pauseMenu').style.visibility = "hidden";
-			document.getElementById('regles').style.visibility = "visible";
-		};
+		// -- show rules
+		if(game.scene == 'menu' && input.gamepad.connected && input.gamepad.U){
+			game.scene = 'rules-home';			
+		}
 
-		if(game.scene == 'game' && input.gamepad.connected && input.gamepad.strt){
+		// -- show menu
+		if(game.scene == 'rules-home' && input.gamepad.connected && input.gamepad.A){
+			game.scene = 'menu';			
+		}
+		if(game.scene == 'pause' && input.gamepad.connected && input.gamepad.U){
+			game.scene = 'rules';			
+		}
+		if(game.scene == 'pause' && input.gamepad.connected && input.gamepad.Y){
+			game.reset();	
+			game.scene = 'menu';
+		}
+
+		// pause
+		if((game.scene == 'game' && input.gamepad.connected && input.gamepad.strt) 
+			|| (game.scene == 'rules' && input.gamepad.connected && input.gamepad.A)){
 			game.scene = 'pause';
-			document.getElementById('home').style.visibility = "hidden";
-			document.getElementById('pauseMenu').style.visibility = "visible";
 		};
 
 		if(game.scene == 'game'){
+			visibilityHidden(document.getElementsByClassName('nav'));					
+			
+			var menu = sound.getSound('menu');
+			menu.sound.pause();
+			
 			game.update();
 			game.render();
 		}
 
 		requestAnimFrame(GameLoop);
 	}
-
 });
 
 // shim layer with setTimeout fallback
@@ -85,23 +131,29 @@ window.requestAnimFrame = (function(){
           };
 })();
 
+navigator.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads;
+
 function rand(min, max) {
 	return Math.random() * (max - min) + min;
 }
+
 function randi(min, max) {
 	return Math.round(Math.random() * (max - min) + min);
 }
 
+function collide(a, b) {
+	return !(b.x >= a.x + a.width // Trop à droite
+				|| b.x + b.width <= a.x // Trop à gauche
+				|| b.y >= a.y + a.height // Trop en bas
+				|| b.y + b.height <= a.y) // Trop en haut
+}
 
-function collide(a, b){
-	//console.log(b.x);
+function distanceBetween(a,b){
+	return Math.abs(b-a);
+}
 
-	// if (b.x >= a.x + a.width) { console.log('trop a droite'); }
-	// if (b.x + b.width <= a.x) { console.log('trop a gauche'); }
-	// // if (b.y >= a.y + a.height) { console.log('trop en bas'); }
-	// if (b.y + b.height <= a.y ) { console.log('trop en haut'); }
-	return !(b.x > a.x + a.width 			// trop à droite
-				|| b.x + b.width < a.x 	// trop à gauche
-				|| b.y > a.y + a.height 	// trop en bas
-				|| b.y + b.height < a.y ) 	// trop en haut
+function visibilityHidden(t){
+	for(var i = 0; i < t.length; i++) {
+	    t[i].style.visibility = 'hidden';
+	}	
 }

@@ -2,32 +2,30 @@
  * game.js
 **/
 
-define(['IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'stage', 'squirrel', 'extras'], function(IM, IIG, player, canvas, input, projectiles, stage, squirrel, extras) {
+define(['Collider', 'IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'stage', 'panthers', 'sound', 'squirrel', 'extras', 'waterLevel','score'], 
+	function(Collider, IM, IIG, player, canvas, input, projectiles, stage, panthers, sound, squirrel, extras, waterLevel, score) {
+
 	function Game() {
 		
 		this.scene = "menu";
+		this.Collider;
 
 		this.init = function() {
-			// sound.theme.play();
-			player.init();
-			stage.init();
 
+			this.Collider = new Collider;
+
+			panthers.init();
+			stage.init(this.Collider);
+			player.init(this.Collider);
 			squirrel.init();
-
-
-			//this.test = IM.getInstance('assets/images/explosion');
-			// this.test.animation = new IIG.Animation({
-			// 	sWidth : 256,
-			// 	sHeight : 256,
-			// 	sy : 0,
-			// 	iterations : 1,
-			// 	animByFrame : 1
-			// });
+			waterLevel.init();
+			score.init();
+			
 		};
 
 		this.update = function() {
 			IM.update();
-			
+			panthers.update();
 			stage.updateBehavior(player.direction + Math.PI, player.speed * .2);
 			stage.update();
 			player.update();
@@ -35,7 +33,7 @@ define(['IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'stage', 'squir
 
 			squirrel.update();
 			extras.update();
-
+			
 
 			// ----- collision between projectile and squirrel -----
 			var s;
@@ -64,7 +62,8 @@ define(['IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'stage', 'squir
    					// -- remove projectile and init squirrel position --
 					projectiles.remove(p);
 					squirrel.initPosition(s);
-
+					score.addPoint();
+					
 					c--;
 				}
 
@@ -74,34 +73,29 @@ define(['IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'stage', 'squir
 
 
 			// ----- collision between player and extras -----
-			var e;
-
-			for (var i = 0; i < extras.extrasList.length; i++) {
-				e = extras.extrasList[i]
-
-				var p = player.checkCollisionWith(e);
-				if(p !== false){
-					// -- Sound --
-					//sound.explosion.stop();
-					//sound.explosion.play();
-
-					extras.remove(e);
-				}
-
-			};
+				
+				extras.checkCollisionWith(player);
 			
 		};
+		this.reset = function(){
+			player.destroy();
+			squirrel.destroy();
+			extras.destroy();
+			panthers.destroy();
+			waterLevel.destroy();
+
+		}
 
 		this.render = function() {
 			canvas.ctx.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
-
 			stage.render();
+			panthers.render();
 			player.render();
 			projectiles.render();
-
 			squirrel.render();
 			extras.render();
-			//IM.drawImage(canvas.ctx, this.test, 0, 0);
+			waterLevel.render();
+			score.render();
 		};
 	}
 	return new Game();

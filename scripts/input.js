@@ -64,10 +64,10 @@ define([], function() {
 	});
 
 	var updateGamepadsButtons = function() {
-		if (!navigator.webkitGetGamepads)
+		if (!navigator.getGamepads)
 			return false;
 
-		var gamepads = navigator.webkitGetGamepads();
+		var gamepads = navigator.getGamepads();
 
 		gamepad.connected = !! gamepads[0];
 
@@ -83,12 +83,13 @@ define([], function() {
 		gamepad.down = mainGamepad.buttons[13] === 1;
 		gamepad.left = mainGamepad.buttons[14] === 1;
 
+		
+
 		gamepad.O = mainGamepad.buttons[0] === 1;
 		gamepad.U = mainGamepad.buttons[2] === 1;
 		gamepad.Y = mainGamepad.buttons[3] === 1;
 		gamepad.A = mainGamepad.buttons[1] === 1;
-		
-		gamepad.r1 = mainGamepad.buttons[5] === 1;
+
 
 		gamepad.strt = mainGamepad.buttons[9] === 1;
 		gamepad.select = mainGamepad.buttons[8] === 1;
@@ -98,12 +99,15 @@ define([], function() {
 		gamepad.joystickRight.axeX = mainGamepad.axes[2];
 		gamepad.joystickRight.axeY = mainGamepad.axes[3];
 
+		gamepad.r1 = mainGamepad.buttons[5] === 1;
+
 		// Vérification et correction de la marge d'erreur renvoyée sur les Axes par l'API Gamepad
 		gamepad.joystickLeft.axeX = ( Math.abs(0 - gamepad.joystickLeft.axeX) > 0.15) ? gamepad.joystickLeft.axeX : 0;
 		gamepad.joystickLeft.axeY = ( Math.abs(0 - gamepad.joystickLeft.axeY) > 0.15) ? gamepad.joystickLeft.axeY : 0;
 
 		gamepad.joystickRight.axeX = ( Math.abs(0 - gamepad.joystickRight.axeX) > 0.15) ? gamepad.joystickRight.axeX : 0;
 		gamepad.joystickRight.axeY = ( Math.abs(0 - gamepad.joystickRight.axeY) > 0.15) ? gamepad.joystickRight.axeY : 0;
+
 	};
 
 	return {

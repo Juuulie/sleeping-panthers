@@ -4,15 +4,24 @@
 
 define(['canvas','config','IM'], function(canvas, config, IM) {
 
-	function Squirrel() {
-		this.height = 30;
-		this.width = 40;
+	function Squirrel( params ) {
+		this.width = params.img.width/16;
+		this.height = params.img.height;
 		this.x = 10;
 		this.y = 0;
 		this.direction = 1;
-		this.speed = 2;
+		this.speed = 3;
+		this.img = params.img;
+		this.img.animation = new IIG.Animation({
+			sWidth : this.width,
+			sHeight : 200,
+			sx : 0,
+			sy : 0,
+			iterations : 'infinite',
+			alternate  : true,
+			animByFrame : 5
+		});
 
-		// this.img = IM.getInstance('assets/images/sprites/sprite_bucky_ballon');
 		// this.width = this.img.width;
 		// this.height = this.img.height;
 	}
@@ -28,7 +37,7 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 		};
 
 		this.add = function() {
-			var squirrel = new Squirrel({});
+			var squirrel = new Squirrel({img : IM.getInstance('assets/images/sprites/sprite_bucky_ballon')});
 			this.initPosition(squirrel);
 
 			this.squirrelList.push(squirrel);
@@ -36,7 +45,7 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 
 		this.initPosition = function(squirrel){
 
-			squirrel.x = rand(0, canvas.canvas.width-squirrel.width);
+			squirrel.x = rand(0, canvas.canvas.width-squirrel.width-310);
 			squirrel.y = - squirrel.height;
 
 		};
@@ -51,19 +60,21 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 			}
 
 		};
+		this.destroy = function(){
+			for (var i = 0; i < this.squirrelList.length; i++) {
+				this.squirrelList.splice(i,1);
+				//delete(this.squirrelList[i]);
+			};
+		}
+
 		this.render = function(){
 
 			var e;
 			for (var i = 0, c = this.squirrelList.length; i < c; i++) {
 				e = this.squirrelList[i];
-				canvas.ctx.fillStyle = 'orange';
-				
-				canvas.ctx.fillRect(e.x, e.y, e.width, e.height);
-				canvas.ctx.save();
-				canvas.ctx.translate(e.x, e.y);
-				//canvas.ctx.drawImage(e.img.data, this.width, this.height);
-				canvas.ctx.restore();
-
+				//canvas.ctx.strokeStyle = 'lime';
+				canvas.ctx.strokeRect(e.x, e.y, e.width, e.height);
+				IM.drawImage(canvas.ctx, e.img, e.x, e.y);
 			}
 
 		};

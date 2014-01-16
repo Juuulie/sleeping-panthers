@@ -9,20 +9,17 @@ define(['canvas', 'IM'], function(canvas, IM) {
 		this.y = params.y || 0;
 		this.direction = params.direction || 0;
 		this.speed = 25;
-		this.width = 10;
-		this.height = 10;
-		//this.img = IM.getInstance('assets/images/shot');
-		// this.width = this.img.width;
-		// this.height = this.img.height;		
+		this.img = IM.getInstance('assets/images/sprites/spit');
+		this.width = this.img.width;
+		this.height = this.img.height;		
 	}
 	
 	function ProjectilesManager() {
 		this.projectilesList = [];
 
 		this.add = function(x, y, direction) {
-
 			this.projectilesList.push(new Projectile({
-				x : x, // enlever moitié width missile
+				x : x,
 				y : y,
 				direction : direction
 			}));
@@ -67,20 +64,25 @@ define(['canvas', 'IM'], function(canvas, IM) {
 		};
 
 		this.render = function() {
-			canvas.ctx.fillStyle = 'red';
 			// Parcours du tableau de projectiles
 			var p;
 			
 			for (var i = 0, c = this.projectilesList.length; i < c; i++) {
 				p = this.projectilesList[i];
-				// break;
-
-				canvas.ctx.fillRect(p.x, p.y, p.width, p.height);
+				// canvas.ctx.strokeStyle = 'red';
+				// canvas.ctx.strokeRect(p.x, p.y, p.width, p.height);
 				canvas.ctx.save();
 				canvas.ctx.translate(p.x, p.y);
-				//canvas.ctx.drawImage(p.img.data, 0, 0);
+				if (p.direction < -2) {
+					canvas.ctx.rotate(-0.75);
+				}else if(p.direction < 0 && p.direction > -1){
+					canvas.ctx.rotate(0.75);
+				}
+				canvas.ctx.drawImage(p.img.data, 0, 0);
 				canvas.ctx.restore();
 			}
+
+			canvas.ctx.fillStyle = 'none';
 		};
 
 		this.remove = function(obj) {
