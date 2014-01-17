@@ -72,12 +72,18 @@ define(['canvas', 'IM'], function(canvas, IM) {
 				// canvas.ctx.strokeStyle = 'red';
 				// canvas.ctx.strokeRect(p.x, p.y, p.width, p.height);
 				canvas.ctx.save();
-				canvas.ctx.translate(p.x, p.y);
+				
 				if (p.direction < -2) {
+					canvas.ctx.translate(p.x - 30, p.y);
 					canvas.ctx.rotate(-0.75);
+					
 				}else if(p.direction < 0 && p.direction > -1){
+					canvas.ctx.translate(p.x + 15, p.y);
 					canvas.ctx.rotate(0.75);
+				}else{
+					canvas.ctx.translate(p.x - 8, p.y);
 				}
+
 				canvas.ctx.drawImage(p.img.data, 0, 0);
 				canvas.ctx.restore();
 			}

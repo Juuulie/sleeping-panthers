@@ -39,32 +39,34 @@ define(['Collider', 'IM', 'IIG', 'player', 'canvas', 'input', 'projectiles', 'st
 			var s;
 			for (var i = 0, c = squirrel.squirrelList.length; i < c; i++) {
 				s = squirrel.squirrelList[i];
-
 				var p = projectiles.checkCollisionWith(s);
 				if(p !== false){
 					// -- Sound --
 					//sound.explosion.stop();
 					//sound.explosion.play();
+   					s.life--;
+   					projectiles.remove(p);
+   					// Si l'écureuil n'a plus de ballons
+   					if(!s.life){
+	   					// -- Random Extras : Bonus / Malus --
+	   					var random_extras =  Math.round(Math.random()*100)/100;
 
-   				
-   					// -- Random Extras : Bonus / Malus --
-   					var random_extras =  Math.round(Math.random()*100)/100;
+	   					if(random_extras >= 0.75 && random_extras < 0.88){
+	   						extras.addBonus(s.x, s.y);
+	   					}else if(random_extras >= 0.88 && random_extras <= 1){
+	   						extras.addMalus(s.x, s.y);
+	   					}else{
+	   						console.log('nothing appends');
+	   						extras.addBonus(s.x, s.y); // to delete
+	   					}
 
-   					if(random_extras >= 0.75 && random_extras < 0.88){
-   						extras.addBonus(s.x, s.y);
-   					}else if(random_extras >= 0.88 && random_extras <= 1){
-   						extras.addMalus(s.x, s.y);
-   					}else{
-   						console.log('nothing appends');
-   						extras.addBonus(s.x, s.y); // to delete
-   					}
+	   					// -- remove projectile and init squirrel position --
+						squirrel.initPosition(s);
+						score.addPoint();
+						
+						c--;
+					}
 
-   					// -- remove projectile and init squirrel position --
-					projectiles.remove(p);
-					squirrel.initPosition(s);
-					score.addPoint();
-					
-					c--;
 				}
 
 

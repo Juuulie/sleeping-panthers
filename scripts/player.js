@@ -8,6 +8,7 @@ define(['CharacterController', 'canvas', 'stage', 'input', 'IM', 'IIG', 'project
 		this.currentStage =  '';
 		this.gameStarted = 0;
 		this.lastShotTime = 0;
+		this.onDrink = false;
 		this.onSpit = false;
 		this.canSpit = true;
 		this.waterMax = 50;
@@ -51,6 +52,8 @@ define(['CharacterController', 'canvas', 'stage', 'input', 'IM', 'IIG', 'project
 				animByFrame : 8
 			});
 
+			this.sprites.drink = IM.getInstance('assets/images/sprites/kuzco_drink');
+
 			this.img = this.sprites.walk;
 
 			this.Controller = new CharacterController({
@@ -71,16 +74,29 @@ define(['CharacterController', 'canvas', 'stage', 'input', 'IM', 'IIG', 'project
 
 		this.update = function() {
 
+			// Controles update
 			this.Controller.update();
 			this.Controller.bindKey('right', (input.gamepad.right || input.keyboard.right));
-			this.Controller.bindKey('down', (input.gamepad.down || input.keyboard.down));
 			this.Controller.bindKey('left', (input.gamepad.left || input.keyboard.left));
 			this.Controller.bindKey('jump', (input.gamepad.O || input.keyboard.space));
 
 			if(!this.canJump && config.TIMING - this.gameStarted > 200) this.canJump = true;
 
-			this.characterAnimationController();
 			
+			this.characterAnimationController();
+
+			// Remplissage de la jauge d'eau si en train de boire
+			if(this.onDrink){
+				if(this.water < this.waterMax){
+					this.water += 5;
+					var saveWater = this.lessWater;
+					this.lessWater = 0;
+					waterLevel.useWater(this.waterMax, this.water, this.lessWater);
+					this.lessWater = saveWater;
+				}
+			}
+			
+			// Tir
 			if(input.gamepad.r1 && input.gamepad.joystickRight.axeY <= 0){
 				this.fire();
 			}else{
@@ -153,26 +169,42 @@ define(['CharacterController', 'canvas', 'stage', 'input', 'IM', 'IIG', 'project
         }
 
 		// Gère les contrôles d'animation du player
-		this.characterAnimationController = function() {			
+		this.characterAnimationController = function() {	
 
+			// Controle collision avec le point d'eau
+			if(this.Controller.position.x >= 75 && this.Controller.position.x <= 77 && this.Controller.position.y >= 410 
+				&& this.Controller.position.y <= 605 && !this.onDrink){
+				this.img = this.sprites.drink;
+				this.onDrink = true;
+			}
+		
+			// Fleche droite
 			if (input.gamepad.right || input.keyboard.right){
+				this.onDrink = false;
 				this.onSpit = false;
 				this.img = this.sprites.walk;
-				this.img.animation.pauseAnimation = false;
-				this.img.animation.sy = this.img.animation.sHeight;
-			}
-			if (input.gamepad.left || input.keyboard.left) {
-				this.onSpit = false;
-				this.img = this.sprites.walk;
-				this.img.animation.pauseAnimation = false;
-				this.img.animation.sy = 0;
+				if(this.img.animation != undefined){
+					this.img.animation.pauseAnimation = false;
+					this.img.animation.sy = this.img.animation.sHeight;
+				}
 			}
 
+			// Fleche gauche
+			if ((input.gamepad.left || input.keyboard.left) && !this.onDrink) {
+					this.onSpit = false;
+					this.img = this.sprites.walk;
+				if(this.img.animation != undefined){
+					this.img.animation.pauseAnimation = false;
+					this.img.animation.sy = 0;
+				};
+			}
+
+			// Ne touche pas aux flèches directionnelles
 			if (!input.gamepad.right && !input.keyboard.right && !input.gamepad.left && !input.keyboard.left) {
-				if(!this.onSpit){
-					this.img.animation.pauseAnimation = true;
-					this.img.animation.sx = 0;
-				}
+					if(this.img.animation != undefined){
+						this.img.animation.pauseAnimation = true;
+						this.img.animation.sx = 0;
+					}
 			}
 			// Vecteur vitesse Y
 			// console.log(this.Controller.velocity.y);
@@ -197,7 +229,6 @@ define(['CharacterController', 'canvas', 'stage', 'input', 'IM', 'IIG', 'project
 			IM.drawImage(canvas.ctx, this.img, this.Controller.position.x, this.Controller.position.y);
 
 			// Debug
-			canvas.ctx.restore();
 			canvas.ctx.strokeStyle = 'lime';
 			canvas.ctx.strokeRect(this.Controller.position.x, this.Controller.position.y, this.Controller.width, this.Controller.height);
 		}

@@ -11,6 +11,7 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 		this.y = 0;
 		this.direction = 1;
 		this.speed = 3;
+		this.life = config.squirrel_life;
 		this.img = params.img;
 		this.img.animation = new IIG.Animation({
 			sWidth : this.width,
@@ -37,14 +38,21 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 		};
 
 		this.add = function() {
-			var squirrel = new Squirrel({img : IM.getInstance('assets/images/sprites/sprite_bucky_ballon')});
+			var squirrel;
+
+			if(config.squirrel_life == 2){
+				squirrel = new Squirrel({img: IM.getInstance('assets/images/sprites/sprite_bucky_ballon_malus')})
+			}else{
+				squirrel = new Squirrel({img : IM.getInstance('assets/images/sprites/sprite_bucky_ballon')});
+			}
+
 			this.initPosition(squirrel);
 
 			this.squirrelList.push(squirrel);
 		};
 
 		this.initPosition = function(squirrel){
-
+			squirrel.life = config.squirrel_life;
 			squirrel.x = rand(0, canvas.canvas.width-squirrel.width-310);
 			squirrel.y = - squirrel.height;
 
@@ -60,6 +68,7 @@ define(['canvas','config','IM'], function(canvas, config, IM) {
 			}
 
 		};
+
 		this.destroy = function(){
 			for (var i = 0; i < this.squirrelList.length; i++) {
 				this.squirrelList.splice(i,1);

@@ -16,7 +16,9 @@ define(['canvas', 'IM', 'sound', 'water', 'player'], function(canvas, IM, sound,
 			this.Collider = Collider;
 
 			var theme = sound.getSound('theme');
+			console.log(theme)
 			//theme.sound.play();
+
 			this.platformsList.push({id:'puit', x:0, y:520, width: 133, height:103, img: IM.getInstance('assets/images/platform/puit')});
 			this.platformsList.push({id:'sol', x:0, y:(720-115), width: 1280, height:115, img: IM.getInstance('assets/images/platform/plateformeDebut')});
 			this.platformsList.push({id:'sol_panth', x:0, y:(720-32), width: 1280, height:32, img: IM.getInstance('assets/images/platform/sol')});
@@ -29,8 +31,8 @@ define(['canvas', 'IM', 'sound', 'water', 'player'], function(canvas, IM, sound,
 
 			this.Collider.defineArea(0, 0, canvas.canvas.width - 310, canvas.canvas.height - 105);
 			this.Collider.addBody(0, 550, 75, 50);
-			this.Collider.addBody(-10, 410, 270, 40);
-			this.Collider.addBody(813, 400, 267, 61);
+			this.Collider.addBody(0, 410, 270, 40);
+			this.Collider.addBody(830, 410, 267, 40);
 		};
 
 		this.update = function() {

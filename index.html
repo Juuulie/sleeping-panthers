@@ -31,6 +31,10 @@
 		#rules, #rules-home{
 			background: url('assets/images/bg/rules.png');
 		}
+		#gameover{
+			background: url('assets/images/bg/bg-gameover.png');			
+		}
+
 		.nav ul{
 			width:300px;
 			padding:0;
@@ -45,10 +49,17 @@
 		#pause ul{
 			margin-top:200px;
 		}
-
+		#gameover ul{
+			margin-top:480px;
+		}
 		.playButton{
 			background: url('assets/images/btn/T_O_commencer.png') no-repeat;
 		}
+		.continueButton{
+			background: url('assets/images/btn/T_O_commencer.png') no-repeat;
+		}
+
+
 		.replayButton{
 			background: url('assets/images/btn/T_O_recommencer.png') no-repeat;
 		}
@@ -86,7 +97,12 @@
 		<ul>
 			<li class="rulesButton"></li>
 			<li class="quitButton"></li>
-			<li class="playButton"></li>
+			<li class="continueButton"></li>
+		</ul>
+	</div>
+	<div id="gameover" class="nav">
+		<ul>
+			<li class="replayButton"></li>
 		</ul>
 	</div>
 

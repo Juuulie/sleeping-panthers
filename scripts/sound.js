@@ -27,6 +27,18 @@ define([], function() {
 			spit.sound.src = 'assets/sounds/spit.ogg';
 			spit.id = 'spit';
 			this.sounds.push(spit);
+
+			var squirrel = {};
+			squirrel.sound = new Audio();
+			squirrel.sound.src = 'assets/sounds/squirrel_final.ogg';
+			squirrel.id = 'squirrel';
+			this.sounds.push(squirrel);
+
+			var extras = {};
+			extras.sound = new Audio();
+			extras.sound.src = 'assets/sounds/pop_bonus.ogg';
+			extras.id = 'extras';
+			this.sounds.push(extras);
 			
 		};
 

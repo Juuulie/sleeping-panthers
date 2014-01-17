@@ -122,7 +122,7 @@ define([], function() {
 
 		if ( this._keys.jump && this.canJump) {
 			this.canJump = false;
-			this.velocity.y = -20;
+			this.velocity.y = -17;
 		}
 	};
 

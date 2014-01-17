@@ -24,6 +24,8 @@ define(['canvas', 'config', 'IM'], function(canvas, config, IM) {
 		this.speed = 5;
 		this.width = 10;
 		this.height = 10;
+		this.img = params.img;
+
 		//this.img = IM.getInstance('assets/images/shot');
 		// this.width = this.img.width;
 		// this.height = this.img.height;		
@@ -37,6 +39,7 @@ define(['canvas', 'config', 'IM'], function(canvas, config, IM) {
 		this.speed = 5;
 		this.width = 10;
 		this.height = 10;
+		this.img = params.img;
 		//this.img = IM.getInstance('assets/images/shot');
 		// this.width = this.img.width;
 		// this.height = this.img.height;		
@@ -46,28 +49,69 @@ define(['canvas', 'config', 'IM'], function(canvas, config, IM) {
 		this.extrasList = [];
 
 		this.addBonus = function(x, y){
-			var eType = randi(1,2);
-
+			var eType = randi(1,3);
+			var bImg = this.bonusImage(eType);
 			var bonus = new Bonus({
 				x : x, 
 				y : y,
 				eType : eType,
+				img : bImg
 			});
 
 			this.extrasList.push(bonus);
 		};
 		this.addMalus = function(x, y){
-			var eType = randi(1,5);
+			var eType = randi(1,4);
+			var mImg = this.malusImage(eType);
 
 			var malus = new Malus({
 				x : x, 
 				y : y,
 				eType : eType,
+				img : mImg
 			});
 
 			this.extrasList.push(malus);
-
 		};
+
+
+		this.bonusImage = function(eType){
+			var bImg;
+
+			switch(eType){
+				case 1 :
+					bImg = IM.getInstance('assets/images/extras/bonus/b-infini');
+					break;
+				case 2 :
+					bImg = IM.getInstance('assets/images/extras/bonus/b-mitraillette');
+					break;
+				case 3 :
+					bImg = IM.getInstance('assets/images/extras/bonus/b-speed');
+					break;
+			}
+
+			return bImg;			
+		}
+		this.malusImage = function(eType){
+			var mImg;
+
+			switch(eType){
+				case 1 :
+					mImg = IM.getInstance('assets/images/extras/malus/f-ecureuils');
+					break;
+				case 2 :
+					mImg = IM.getInstance('assets/images/extras/malus/f-crachat');
+					break;
+				case 3 :
+					mImg = IM.getInstance('assets/images/extras/malus/f-ballons');
+					break;
+				case 4 :
+					mImg = IM.getInstance('assets/images/extras/malus/f-nuit');
+					break;
+			}
+
+			return mImg;			
+		}
 
 
 		this.update = function(){
@@ -171,15 +215,9 @@ define(['canvas', 'config', 'IM'], function(canvas, config, IM) {
 			for (var i = 0, c = this.extrasList.length; i < c; i++) {
 				e = this.extrasList[i];
 
-				if(e.extra == 'malus')
-					canvas.ctx.fillStyle = 'red';
-				if(e.extra == 'bonus')
-					canvas.ctx.fillStyle = 'white';
-				// break;
-				canvas.ctx.fillRect(e.x, e.y, e.width, e.height);
 				canvas.ctx.save();
 				canvas.ctx.translate(e.x, e.y);
-				//canvas.ctx.drawImage(p.img.data, 0, 0);
+				canvas.ctx.drawImage(e.img.data, 0, 0);
 				canvas.ctx.restore();
 				canvas.ctx.fillStyle = 'none';
 			}
